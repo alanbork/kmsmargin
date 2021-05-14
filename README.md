@@ -1,4 +1,4 @@
-X11 users can change the overscan margins using xrandr, but if you are running the raspberry pi console without x11 that won't work, and the config.txt method is hard to fine tune. This can be run after boot and allows semi-interactive fine tuning. 
+X11 users can change the overscan margins using xrandr, but if you are running the raspberry pi console without x11 that won't work, and the config.txt method is hard to fine tune. This can be run after boot and allows semi-interactive fine tuning. It works with KMS out of the box, or fkms with a simple comment/uncomment swap.
 
 
 **What do I need?**
