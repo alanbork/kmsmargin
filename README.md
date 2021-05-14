@@ -1,12 +1,5 @@
-Whether by design or by oversight, it turns out the kms/drm driver architecture used in linux to set the current video mode allows easy selection of custom modes as well. You just stuff the values you want into the mode structure returned by getConnector, and then tell drm to use that mode. Because this is close to the metal you can't just say height, width, and refresh, but need to specify the full timing info like you would using xorg's modelines.
+X11 users can change the overscan margins using xrandr, but if you are running the raspberry pi console without x11 that won't work, and the config.txt method is hard to fine tune. This can be run after boot and allows semi-interactive fine tuning. 
 
-This complete example takes a xorg compliant modeline and stuffs it into the proper fields of the mode structure. It has been tested on the raspberry pi 4. As a debugging tool, it can also dump the modelines of the modes detected by kms/linux for your monitor. 
-
-disclaimer: there may well be more proper ways to do this, I haven't read the docs to see.
-
-**Raspberry Pi 4 note**
-
-The raspberry Pi 4, at the moment of writing this, has a limited KMS driver, and a buggy "fake" kms driver. This is because the GPU is different from the previous ones. Instead of using the `vc` libraries, you will need to use the DRM/GBM.
 
 **What do I need?**
 
@@ -28,45 +21,19 @@ hdmi_mode=81
 
 **How do I try it?**
 
-Copy or download the `kmsmodeline.c` file onto your Raspberry Pi. Using any terminal, write the following commands to compile the source file:
+Copy or download the `margin.c` file onto your Raspberry Pi. Using terminal, write the following commands to compile the source file:
 
 ```
-gcc -o kmsmodeline kmsmodeline.c -ldrm -lgbm -lEGL -lGLESv2 -I/usr/include/libdrm -I/usr/include/GLES2
+gcc -o margin margin.c -ldrm -lgbm -lEGL -lGLESv2 -I/usr/include/libdrm -I/usr/include/GLES2
 ```
 
 To run the executable, type the following:
 
 ```
-kmsmodeline <mode number>
-kmsmodeline <mode number> "xorg modeline", eg:
-kmsmodeline 31 "13.514000 720 739 801 858 480 488 494 525 -hsync -vsync interlace dblclk"
+margin 100 # all the same
+margin 50 100 #top/bottom and left/right the same
+margin 20 10 15 15 # all custom, 
 ```
-
-You should see the following output:
-
-```
-% kmsmodeline 31 
-/dev/dri/card0 does not have DRM resources, using card1
-720x480i-60.00hz(60): 13.514000 720 739 801 858 480 488 494 525 -hsync -vsync interlace dblclk
-Initialized EGL version: 1.4
-
-```
-
-The program will briefly show the following full screen:
-
-* 4 seconds of warming up the screen to wait for the monitor to finish switching modes
-
-* 60 frames of black white full screen flicker.
-
-* timing for each buffer flip, eg
-````
-16.69 ms        59.90 hz
-16.64 ms        60.10 hz
-16.69 ms        59.91 hz
-16.64 ms        60.10 hz
-[....]
-````
-(note that buffer flips can but need not be tied to vsync. if vsync is what you need this is probably the only proper way to go: https://github.com/dvdhrm/docs/blob/master/drm-howto/modeset-vsync.c)
 
 ## Troubleshooting and Questions
 
