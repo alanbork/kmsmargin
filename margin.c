@@ -1,5 +1,5 @@
 // gcc -o margin margin.c -ldrm -lgbm -lEGL -lGLESv2 -I/usr/include/libdrm -I/usr/include/GLES2
-// set overscan margins for pi4 or any pi running kms (maybe also fkms)
+// set overscan margins for pi4 or any pi running kms (also fkms with code change)
 
 #include <xf86drm.h>
 #include <xf86drmMode.h>
@@ -117,11 +117,21 @@ if (connector == NULL)
     }
 
 connectorId = connector->connector_id;
-
+/*
+// fkms values
 drmModeObjectSetProperty(device, connectorId, DRM_MODE_OBJECT_CONNECTOR,           90, left);
 drmModeObjectSetProperty(device, connectorId, DRM_MODE_OBJECT_CONNECTOR,           91, right);
 drmModeObjectSetProperty(device, connectorId, DRM_MODE_OBJECT_CONNECTOR,           92, top);
 drmModeObjectSetProperty(device, connectorId, DRM_MODE_OBJECT_CONNECTOR,           93, bottom);
+  */
+  
+//kms values:
+drmModeObjectSetProperty(device, connectorId, DRM_MODE_OBJECT_CONNECTOR,           33, left);
+drmModeObjectSetProperty(device, connectorId, DRM_MODE_OBJECT_CONNECTOR,           34, right);
+drmModeObjectSetProperty(device, connectorId, DRM_MODE_OBJECT_CONNECTOR,           35, top);
+drmModeObjectSetProperty(device, connectorId, DRM_MODE_OBJECT_CONNECTOR,           36, bottom);
+
+//printf("%i", connectorId); // note that kms has more than one connector, should handle that properly
 
 close(device);
 return EXIT_SUCCESS;
