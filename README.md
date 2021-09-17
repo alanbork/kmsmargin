@@ -12,7 +12,7 @@ sudo apt-get install libegl1-mesa-dev libgbm-dev libgles2-mesa-dev
 You will also need to connect your Raspberry Pi to a screen. The boot config from `/boot/config.txt` that I have used for my tests, if it helps in any way:
 
 ```bash
-dtoverlay=vc4-fkms-v3d
+dtoverlay=vc4-kms-v3d
 max_framebuffers=2
 hdmi_force_hotplug=1
 hdmi_group=2
